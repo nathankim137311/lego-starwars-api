@@ -16,7 +16,7 @@ async function fetchProducts() {
         }
 
         // wait for product links to load 
-        await page.waitForSelector('a[data-test="product-leaf-title-link"]');
+        // await page.waitForSelector('a[data-test="product-leaf-title-link"]');
 
         const linksArr = await page.evaluate(async () => {
 
