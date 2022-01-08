@@ -3,6 +3,7 @@ const puppeteer = require('puppeteer');
 async function fetchProducts() { 
     const extractProducts = async (url) => {
         const page = await browser.newPage();
+        page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36 WAIT_UNTIL=load");
         await page.goto(url);
 
         if (parseInt(url.match(/page=(\d+)$/)[1], 10) === 1) {
@@ -14,9 +15,6 @@ async function fetchProducts() {
             await page.waitForSelector('button[class="Button__Base-sc-1jdmsyi-0 aKFCv CookieModalstyles__PrimaryButton-sc-19wlthm-7 fzEDYJ"]');
             await page.click('button[class="Button__Base-sc-1jdmsyi-0 aKFCv CookieModalstyles__PrimaryButton-sc-19wlthm-7 fzEDYJ"]');
         }
-
-        // wait for product links to load 
-        // await page.waitForSelector('a[data-test="product-leaf-title-link"]');
 
         const linksArr = await page.evaluate(async () => {
 
@@ -43,7 +41,7 @@ async function fetchProducts() {
     const browser = await puppeteer.launch({
         headless: true,
     });
-    const url = 'https://www.lego.com/en-us/themes/star-wars?page=1';
+    const url = `https://www.lego.com/en-us/themes/star-wars?page=1`;
     const products = await extractProducts(url);
     
     console.log(products);
@@ -54,7 +52,7 @@ async function fetchProducts() {
 async function productDetails(productsArr, page, link) {
     await page.goto(link);
     
-    const productName = await page.evaluate(async () => {
+    const products = await page.evaluate(async () => {
         // scroll to the bottom of the page
         const distance = 300;
         const delay = 100;
@@ -76,9 +74,8 @@ async function productDetails(productsArr, page, link) {
         }
     });
 
-    productsArr.push(productName);
+    console.log(products)
+    productsArr.push(products);
 }
 
 fetchProducts();
-
-// document.querySelector('span[class="Text__BaseText-sc-178efqu-0 gxTATd"]').textContent.replace(/[A-Za-z\$]/g, '').trim();
