@@ -20,6 +20,7 @@ router.get('/', (req, res) => {
     res.send('Welcome to Lego Starwars Api!').status(200); 
 }); 
 
+// Get all products with an option for pagination 
 router.get('/products', async (req, res) => {
     // if req.query object is empty 
     if (Object.keys(req.query).length === 0) {
@@ -50,30 +51,25 @@ router.get('/products', async (req, res) => {
             res.status(500).send(err);
         }
     }
-    if (req.query.price) {
-        const price = req.query.price;  
-        // case insensitive search 
-        const products = await Product.find({ price: { $lte: price }});
+});
 
-        try {
-            if (products.length === 0) return res.status(404).send(`The products with availability "${price}" was not found`); 
-            res.send(products).status(200); 
-        } catch(err) {
-            res.status(500).send(err);
-        }
-    }
-    if (req.query.reviews) {
-        const reviews = req.query.reviews;  
-        // case insensitive search 
-        const products = await Product.find({ reviews: { $gte: parseInt(reviews) } });
+// Get one product 
+router.get('/products/:id', async (req, res) => {
+    const id = req.params.id;
 
-        try {
-            if (products.length === 0) return res.status(404).send(`The products with reviews "${reviews}" was not found`); 
-            res.send(products).status(200); 
-        } catch(err) {
-            res.status(500).send(err);
-        }
-    }
+    const products = await Product.find({ item_id: id});
+
+    try { // sendStatus method is both status() and send() in one request
+        if (products.length === 0) return res.status(404).send('The product with the given ID was not found'); 
+        res.send(products).status(200);
+    } catch (error) {
+        res.status(500).send(error);
+    }   
+});
+
+// For invalid routes
+app.get('*', (req, res) => {
+    res.send('404! Page not found').status(404);
 });
 
 async function paginatedResults(field, req, res) {
