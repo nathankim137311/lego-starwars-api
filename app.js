@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose'); 
 const Product = require('./models/Product');
 const bodyParser = require('body-parser'); 
+const cors = require('cors');
 const { fetchProducts } = require('./scraper'); 
 
 require('dotenv').config(); 
@@ -11,6 +12,7 @@ const app = express();
 const router = express.Router(); 
 
 // Middleware 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/api', router); 
@@ -130,6 +132,6 @@ db.once('open', async () => {
     console.log('Products inserted!');
 }); 
 
-const PORT = 9000; 
+const PORT = process.env.PORT || 9000; 
 
 app.listen(PORT, () => console.log(`server running on PORT ${PORT}...`));
