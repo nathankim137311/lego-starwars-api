@@ -43,16 +43,17 @@ async function fetchProducts() {
     });
     const url = `https://www.lego.com/en-us/themes/star-wars?page=1`;
     const products = await extractProducts(url);
-    
-    console.log(products);
+
     console.log(products.length);
     await browser.close();
+
+    return products; 
 }
 
 async function productDetails(productsArr, page, link) {
     await page.goto(link);
     
-    const products = await page.evaluate(async () => {
+    const product = await page.evaluate(async () => {
         // scroll to the bottom of the page
         const distance = 300;
         const delay = 100;
@@ -62,20 +63,20 @@ async function productDetails(productsArr, page, link) {
         }
 
         return {
-            product_name: document.querySelector('h1.Text__BaseText-sc-178efqu-0 > span').textContent,
+            set: document.querySelector('h1.Text__BaseText-sc-178efqu-0 > span').textContent,
             item_id: document.querySelector('span[data-test="product-details__product-code"]').textContent,
             reviews: document.querySelector('button[data-test="product-overview-reviews"]') === null ? '0' : document.querySelector('button[data-test="product-overview-reviews"]').textContent,
-            rating: document.querySelector('span[class="Reviewsstyles__Microdata-bzbdaf-0 iAUoUt"] > span[itemprop="ratingValue"]') === null ? 'none' : document.querySelector('span[class="Reviewsstyles__Microdata-bzbdaf-0 iAUoUt"] > span[itemprop="ratingValue"]').textContent,
+            rating: document.querySelector('span[class="Reviewsstyles__Microdata-bzbdaf-0 iAUoUt"] > span[itemprop="ratingValue"]') === null ? '' : document.querySelector('span[class="Reviewsstyles__Microdata-bzbdaf-0 iAUoUt"] > span[itemprop="ratingValue"]').textContent,
             availability: document.querySelector('p[data-test="product-overview-availability"] > span').textContent,
             price: document.querySelector('.hviDue') === null ? document.querySelector('span[class="Text__BaseText-sc-178efqu-0 gxTATd"]').textContent.replace(/[A-Za-z\$]/g, '').trim() : document.querySelector('.hviDue').textContent.replace(/[A-Za-z\$]/g, ''), 
             images: [...document.querySelectorAll('img[class="Imagestyles__Img-m2o9tb-0 jyexzd Thumbnail__StyledImage-e7z052-1 vTyKJ"]')].map(image => image.src),
             ages: document.querySelector('span.Text__BaseText-sc-178efqu-0.cMNVBC.ProductDetailsstyles__ProductAttributeValue-sc-16lgx7x-6.iLLHZh > span.Markup__StyledMarkup-ar1l9g-0.hlipzx').textContent, 
-            pieces: document.querySelector('span[data-test="product-details__piece-count"]') === null ? 'n/a' : document.querySelector('span[data-test="product-details__piece-count"]').textContent,   
+            pieces: document.querySelector('span[data-test="product-details__piece-count"]') === null ? '1' : document.querySelector('span[data-test="product-details__piece-count"]').textContent,   
         }
-    });
+    }); 
 
-    console.log(products)
-    productsArr.push(products);
+    productsArr.push(product);
 }
 
-fetchProducts();
+module.exports = { fetchProducts, productDetails };
+
