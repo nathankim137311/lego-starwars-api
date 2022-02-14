@@ -4,6 +4,7 @@
 A RESTful API that serves product data from Lego.com.
 
 ## Demo
+### Testing Endpoints
 ![endpoints](https://user-images.githubusercontent.com/46698958/153804952-60162e38-79bf-477c-b6a2-811abcec01a2.gif)
 
 ## Features
