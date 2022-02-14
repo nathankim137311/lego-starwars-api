@@ -1,4 +1,4 @@
-# Lego Star Wars API
+# [Lego Star Wars API](https://rapidapi.com/nathankim137311/api/lego-star-wars-sets/)
 
 ## Description 
 A RESTful API that serves product data from Lego.com.
